@@ -13,7 +13,7 @@ export default class BaseService {
   }
 
   baseURL() {
-    return 'http://localhost:4000/';
+    return process.env.VUE_APP_API_URL;
   }
 
   headers(headers = {}) {
