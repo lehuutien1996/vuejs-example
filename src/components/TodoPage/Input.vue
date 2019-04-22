@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="input-container">
   <div class="input-wrapper">
     <label for="todo_title" class="input-label">
       <span>Title * </span>
@@ -23,6 +23,14 @@
     ></textarea>
   </div>
   <div class="input-wrapper">
+    <label for="todo_isComplete" class="input-label">
+      <input type="checkbox" name="isComplete" id="todo_isComplete"
+        v-model="input.isComplete"
+      >
+      <span> Mark this todo is complete or not?</span>
+    </label>
+  </div>
+  <div class="input-wrapper">
     <button class="btn btn-primary" @click="save">Save</button>
   </div>
   <small class="caption">*: This field is required</small>
@@ -39,14 +47,14 @@
 </template>
 
 <script>
-import Validator from 'validatorjs';
-import CreateValidator from '../validators/create_todo.validator';
-import TodoService from '../services/todo.service';
+import CreateValidator from '@/validators/create_todo.validator';
+import TodoService from '@/services/todo.service';
 
 export default {
   name: 'Input',
   data () {
     return {
+      isEditing: false,
       validator: null,
       service: null,
       input: {},
@@ -55,6 +63,9 @@ export default {
   // HOOKS
   async created () {
     this.service = new TodoService();
+
+    // Event Handlers
+    this.$root.$on('edit_todo', this.editTodo);
   },
   // METHODS
   methods: {
@@ -66,18 +77,39 @@ export default {
 
       if (this.validator.passes()) {
         try {
-          await this.service.store(data);
+          if (this.isEditing) {
+            await this.service.update(data.id, data);
+            this.isEditing = false;
+          } else {
+            await this.service.store(data);
+          }
+          this.clearInput();
 
           this.$root.$emit('fetch_todos');
-        } catch (e) { }
+        } catch (e) {
+          //
+        }
       }
-
+    },
+    editTodo(todo) {
+      this.isEditing = true;
+      this.input = todo;
+    },
+    clearInput() {
+      this.input = {};
+      this.validator = null;
     }
   }
 }
 </script>
 
 <style scoped>
+@media (min-width: 768px) {
+  .input-container {
+    width: 720px;
+    margin: 0 auto;
+  }
+}
 .input-wrapper {
   text-align: left;
   margin-bottom: 10px;

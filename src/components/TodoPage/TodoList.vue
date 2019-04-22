@@ -7,6 +7,7 @@
         v-for="todo in todos"
         v-bind:key="todo.id"
         v-bind:class="{'done': todo.isComplete === true}"
+        @click="editTodo(todo)"
       >
         <a href="javascript:void(0);">
           <h5>{{ todo.title }}</h5>
@@ -19,7 +20,7 @@
 </template>
 
 <script>
-import TodoService from '../services/todo.service';
+import TodoService from '@/services/todo.service';
 
 export default {
   name: 'TodoList',
@@ -44,6 +45,9 @@ export default {
       } catch (e) {
         this.todos = [];
       }
+    },
+    editTodo(todo) {
+      this.$root.$emit('edit_todo', todo);
     },
   },
   data () {
