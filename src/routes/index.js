@@ -1,20 +1,9 @@
-import WelcomePage from '@/components/WelcomePage/WelcomePage.vue';
-import TodoPage from '@/components/TodoPage/TodoPage.vue';
+import welcome from './welcome';
+import todo from './todo';
 
 const routes = [
-  {
-    name: 'welcome',
-    path: '/',
-    component: WelcomePage,
-  },
-  {
-    name: 'todo',
-    path: '/todo',
-    component: TodoPage,
-    meta: {
-      requiresAuth: true,
-    }
-  }
+  welcome,
+  todo,
 ];
 
 export default routes;
