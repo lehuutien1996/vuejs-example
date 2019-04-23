@@ -3,7 +3,7 @@ import VueRouter from 'vue-router';
 import './config';
 import routes from './routes';
 import App from './App.vue';
-import routerConfig from '@/config/router';
+import store from './store';
 
 // Global Config
 Vue.config.productionTip = false
@@ -12,9 +12,11 @@ Vue.config.productionTip = false
 Vue.use(VueRouter);
 
 new Vue({
-  render: h => h(App),
-  router: routerConfig(new VueRouter({
+  el: '#app',
+  store, // VueX Store
+  router: new VueRouter({
     mode: 'history', // Removing HashBang #
-    routes
-  })),
-}).$mount('#app')
+    routes,
+  }),
+  render: h => h(App),
+});
