@@ -20,41 +20,24 @@
 </template>
 
 <script>
-import TodoService from '@/services/todo.service';
+import { mapState } from 'vuex';
 
 export default {
   name: 'TodoList',
-  async created () {
-    this.service = new TodoService();
-
-    // Initial Data
-    await this.getTodos();
-
-    this.$root.$on('fetch_todos', async () => await this.getTodos());
+  computed: {
+    ...mapState({
+      todos: ({ todos }) => todos.todos,
+    }),
+  },
+  created () {
+    this.$store.dispatch('todos/getTodos');
   },
   methods: {
-    async getTodos() {
-      try {
-        const { data } = await this.service.all({
-          filter: {
-            order: 'id DESC',
-          },
-        });
-
-        this.todos = data;
-      } catch (e) {
-        this.todos = [];
-      }
-    },
     editTodo(todo) {
-      this.$root.$emit('edit_todo', todo);
+      this.$store.commit('todos/setEditing', true);
+      this.$store.commit('todos/setForm', { ...todo });
     },
   },
-  data () {
-    return {
-      todos: [],
-    };
-  }
 }
 </script>
 
